@@ -1,0 +1,34 @@
+services:
+  web:
+    build: .
+    ports:
+      - "${APP_PORT:-8081}:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: invoicer
+      DB_USER: invoicer
+      DB_PASSWORD: invoicer_secret
+      APP_CURRENCY: ${APP_CURRENCY:-KES}
+      APP_USERNAME: ${APP_USERNAME:-admin}
+      APP_PASSWORD: ${APP_PASSWORD:-change-me-now}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/var/www/html
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: invoicer
+      MYSQL_USER: invoicer
+      MYSQL_PASSWORD: invoicer_secret
+      MYSQL_ROOT_PASSWORD: root_secret
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+volumes:
+  mysql_data:

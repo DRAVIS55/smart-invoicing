@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 206 48" fill="none">
+  <defs>
+    <linearGradient id="g" x1="2" y1="2" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#23A58E"/>
+      <stop offset="1" stop-color="#126D68"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="44" height="44" rx="14" fill="url(#g)"/>
+  <path d="M15 12.5h6.2v17h13.3v6H15V12.5Z" fill="#fff"/>
+  <path d="M28.2 12.5h6.3v6.1h-6.3z" fill="#A8E4D7"/>
+  <text x="57" y="26" fill="#1F3C49" font-family="DM Sans, Arial, sans-serif" font-size="19" font-weight="700" letter-spacing="-.55">ledgerly</text>
+  <text x="58" y="39" fill="#82969B" font-family="DM Sans, Arial, sans-serif" font-size="6.3" font-weight="700" letter-spacing="1.45">BUSINESS MANAGER</text>
+</svg>
