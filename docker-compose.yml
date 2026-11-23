@@ -9,6 +9,7 @@ services:
       DB_USER: invoicer
       DB_PASSWORD: invoicer_secret
       APP_CURRENCY: ${APP_CURRENCY:-KES}
+      APP_STORAGE_PATH: /var/www/private_uploads
       APP_USERNAME: ${APP_USERNAME:-admin}
       APP_PASSWORD: ${APP_PASSWORD:-change-me-now}
     depends_on:
@@ -16,6 +17,8 @@ services:
         condition: service_healthy
     volumes:
       - ./:/var/www/html
+      - /var/www/html/vendor
+      - uploads_data:/var/www/private_uploads
   db:
     image: mysql:8.4
     environment:
@@ -32,3 +35,4 @@ services:
       retries: 20
 volumes:
   mysql_data:
+  uploads_data:

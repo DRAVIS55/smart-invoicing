@@ -34,6 +34,10 @@ The sign-in page is available directly at `/login`. The homepage card switches t
 
 ![Ledger sign-in page](screenshots/sign-in.png)
 
+### Business branding and customer certificates
+
+Add a business logo and contact details during owner registration, then update them any time from **Settings**. You can also upload or replace a business verification document; it is stored privately and is only available to signed-in workspace users. The workspace owner can issue a customer certificate from the customer list and download it as a formatted PDF.
+
 ## Features
 
 - Dashboard with invoice totals, monthly sales, outstanding balances, and open quotes
@@ -42,7 +46,10 @@ The sign-in page is available directly at `/login`. The homepage card switches t
 - Automatic invoice and quote numbering
 - Quote-to-invoice conversion
 - Full and partial payment tracking
-- Print-ready documents that can be saved as PDF from the browser
+- Formatted PDF downloads for invoices, quotes, sales reports, and customer certificates (Dompdf)
+- Business profile with logo and contact details on invoices and certificates
+- Private business verification document upload and download
+- Customer certificates with unique certificate numbers
 - Single-owner registration with password hashing
 - KES currency by default, configurable through `APP_CURRENCY`
 
@@ -68,7 +75,7 @@ If Docker Desktop is missing, the launcher opens its download page and explains 
 
 For manual development, install Docker Engine and Compose, copy `.env.example` to `.env`, set `APP_PASSWORD`, then use `docker compose up --build`. By default the web app is at [http://localhost:8081/](http://localhost:8081/); set `APP_PORT` in `.env` to select another port.
 
-MySQL data persists in the `mysql_data` Docker volume. Tables are initialized on the first app request. The environment credentials (`admin` / `change-me-now` by default) remain available as a local recovery login; the deployment script replaces the sample app password with a generated value. Change the database passwords before sharing or deploying the app.
+MySQL data persists in the `mysql_data` Docker volume. Business logos and verification documents persist in the private `uploads_data` Docker volume, outside the web document root. Back up both volumes to preserve all app data and uploaded files. Tables are initialized on the first app request. The environment credentials (`admin` / `change-me-now` by default) remain available as a local recovery login; the deployment script replaces the sample app password with a generated value. Change the database passwords before sharing or deploying the app.
 
 ## Routes
 
@@ -80,7 +87,14 @@ MySQL data persists in the `mysql_data` Docker volume. Tables are initialized on
 - `/customers` — customer directory
 - `/new?type=invoice` or `/new?type=quote` — create a document
 - `/document/{id}` — view, print, convert, or record payment
+- `/document/{id}/pdf` — download a formatted invoice or quote PDF
+- `/reports` and `/reports/pdf` — view and download the sales report
+- `/certificate/{customer-id}/pdf` — download an issued customer certificate
 - `/settings` — business settings
+
+## Architecture and network guide
+
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full request path and route/action reference, dashboard-to-MySQL flow, Docker image and service configuration explained line by line, Apache/static/private media behavior, volume persistence and backups, optional Nginx reverse proxy design, and a Kubernetes scaling plan. It distinguishes the current Apache + Docker Compose deployment from Nginx and Kubernetes components that would be added later.
 
 ## Project notes
 

@@ -1,0 +1,9 @@
+{
+  "name": "ledger/sales-invoicing",
+  "description": "Sales invoicing and reporting app",
+  "type": "project",
+  "require": {
+    "php": "^8.3",
+    "dompdf/dompdf": "^3.1"
+  }
+}
