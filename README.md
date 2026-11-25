@@ -41,12 +41,17 @@ Add a business logo and contact details during owner registration, then update t
 ## Features
 
 - Dashboard with invoice totals, monthly sales, outstanding balances, and open quotes
-- Customer directory
+- Customer directory with international phone normalization
 - Invoices and quotes with multiple line items and configurable tax rates
 - Automatic invoice and quote numbering
 - Quote-to-invoice conversion
 - Full and partial payment tracking
 - Formatted PDF downloads for invoices, quotes, sales reports, and customer certificates (Dompdf)
+- **WhatsApp Integration (Cerebro API & Baileys):**
+  1. **Manual WhatsApp Dispatch:** One-click invoice sending from the document view with prefilled, editable message templates and international phone number formatting.
+  2. **FIFO Message Queueing:** Dedicated First-In-First-Out message queue (`whatsapp_queue`) ensuring sequential dispatch and decoupling document creation from external network latencies.
+  3. **Automated Scheduling of Invoices:** Future timestamp dispatch (`POST /messages/schedule`) for scheduled payment reminders and upcoming due date notices.
+  4. **Integration Settings Management:** Workspace configuration in Business Settings for Cerebro API URL, API keys (`X-API-Key`), automated creation-time queueing, and custom template merge tags.
 - Business profile with logo and contact details on invoices and certificates
 - Private business verification document upload and download
 - Customer certificates with unique certificate numbers
@@ -90,7 +95,8 @@ MySQL data persists in the `mysql_data` Docker volume. Business logos and verifi
 - `/document/{id}/pdf` — download a formatted invoice or quote PDF
 - `/reports` and `/reports/pdf` — view and download the sales report
 - `/certificate/{customer-id}/pdf` — download an issued customer certificate
-- `/settings` — business settings
+- `/whatsapp-queue` — view, monitor, and process the FIFO WhatsApp dispatch queue
+- `/settings` — business settings and WhatsApp integration configuration
 
 ## Architecture and network guide
 

@@ -27,3 +27,17 @@ input,select,textarea{border:1.5px solid #8794ad;background:#fff}input::placehol
 @media(max-width:600px){.profile-panel .form-row{grid-template-columns:1fr}.verification-state{align-items:flex-start;flex-direction:column}.profile-panel input[type=file],.auth-card input[type=file],.auth-page input[type=file]{font-size:12px;padding:10px}.auth-page .standalone-auth{max-height:none}}
 .marketing .site-nav{position:sticky;top:0;z-index:100;width:100%;max-width:none;padding-left:max(34px,calc((100% - 1220px)/2));padding-right:max(34px,calc((100% - 1220px)/2));background:rgba(255,255,255,.93);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:height .32s cubic-bezier(.2,.75,.25,1),background-color .28s ease,box-shadow .28s ease,border-color .28s ease}.marketing .site-nav.is-scrolled{height:72px;background:rgba(255,255,255,.97);box-shadow:0 8px 30px rgba(25,49,101,.09);border-color:#dce5f5}.scroll-top-button{position:fixed;z-index:90;right:28px;bottom:27px;width:50px;height:50px;border:1px solid rgba(255,255,255,.8);border-radius:16px;background:linear-gradient(145deg,#ffcf50,#ff9e00);color:#13234d;display:grid;place-items:center;box-shadow:0 10px 26px rgba(255,158,0,.32);opacity:0;visibility:hidden;pointer-events:none;transform:perspective(500px) translateY(14px) rotateX(-16deg) scale(.92);transition:opacity .28s ease,visibility .28s ease,transform .38s cubic-bezier(.2,.75,.25,1),box-shadow .28s ease;cursor:pointer}.scroll-top-button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.scroll-top-button.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:perspective(500px) translateY(0) rotateX(0) scale(1)}.scroll-top-button:hover{transform:perspective(500px) translateY(-3px) rotateX(0) scale(1.06);box-shadow:0 15px 30px rgba(255,158,0,.42)}.scroll-top-button:focus-visible{outline:3px solid #7793ff;outline-offset:4px}
 @media(max-width:600px){.marketing .site-nav{padding-left:17px;padding-right:17px}.marketing .site-nav.is-scrolled{height:64px}.scroll-top-button{width:46px;height:46px;right:17px;bottom:17px;border-radius:14px}}
+
+/* WhatsApp Integration & Queue Styles */
+.button.whatsapp { background: #25D366; color: #ffffff; border: 1px solid #25D366; font-weight: 600; }
+.button.whatsapp:hover { background: #20ba59; border-color: #20ba59; color: #ffffff; }
+.badge.queued { background: #e0f2fe; color: #0369a1; }
+.badge.scheduled { background: #fef3c7; color: #b45309; }
+.badge.failed { background: #fee2e2; color: #b91c1c; }
+.badge.unsent { background: #f1f5f9; color: #64748b; }
+.whatsapp-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-top: 24px; }
+.whatsapp-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.whatsapp-card-head h4 { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 16px; color: #0f172a; }
+.whatsapp-tag { background: #25D366; color: white; font-size: 10px; padding: 2px 7px; border-radius: 12px; font-weight: 700; }
+.template-hints { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.5; }
+.template-hints code { background: #f1f5f9; padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 10px; color: #2563eb; }

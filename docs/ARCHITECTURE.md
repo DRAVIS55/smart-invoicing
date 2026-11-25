@@ -115,7 +115,10 @@ These are browser routes handled by the PHP front controller, not a separately v
 | `GET /reports/pdf` | Runs the report queries and downloads the formatted PDF report. |
 | `POST /customers` with action `issue_certificate` | Issues one certificate per customer and stores its number and customer/business name snapshot in MySQL. |
 | `GET /certificate/{customer-id}/pdf` | Reads the issued certificate and downloads a formatted certificate PDF. |
-| `GET /settings` | Displays business profile and verification upload status. `POST /settings` with action `profile` changes profile details/logo/verification upload. |
+| `GET /settings` | Displays business profile, verification upload status, and WhatsApp integration configuration. `POST /settings` with action `profile` updates profile/files; action `whatsapp_settings` configures Cerebro API credentials and templates. |
+| `GET /whatsapp-queue` | Renders the FIFO WhatsApp message queue dashboard with live counts for queued, scheduled, sent, and failed messages. |
+| `POST /whatsapp-queue` with action `process_queue` | Processes up to 10 pending messages from the queue in strict First-In-First-Out (FIFO) sequence. |
+| `POST /document/{id}` with action `send_whatsapp` | Handles manual WhatsApp dispatch, FIFO enqueueing, or forward-scheduled dispatch via Cerebro API. |
 | `GET /media/logo` | Authenticated route that reads the private logo from the upload volume and returns it inline for the invoice/profile UI. |
 | `GET /media/verification` | Authenticated route that reads the private verification file and returns it as an attachment. |
 | `GET /style.css`, `GET /assets/...` | Existing static files served directly by Apache, not database-backed media. |
@@ -237,7 +240,32 @@ Build the app image once per source revision, tag it with a commit or release ve
 
 For a first Kubernetes version, keep one web replica until shared sessions, shared uploads, a real database, secrets, and migrations are in place. Then scale the stateless web Deployment using the same image tag.
 
-## 10. Configuration and deployment files
+## 10. WhatsApp Integration & Automated Dispatch (Cerebro API)
+
+Ledger integrates with the **Cerebro (`whatsapp-saas`) Developer API** (`POST /messages/send` and `POST /messages/schedule` authenticated via `X-API-Key`) to deliver invoices and quotes to customers over WhatsApp.
+
+```mermaid
+flowchart LR
+    UI["Document View / Auto-Queue Hook"] -->|1. Manual Immediate| API["Cerebro API\nPOST /messages/send"]
+    UI -->|2. FIFO Enqueue| Q[(whatsapp_queue\nORDER BY id ASC)]
+    UI -->|3. Schedule| SCH["Cerebro API\nPOST /messages/schedule"]
+    Q -->|Process Queue Now| API
+    API -->|Baileys interval engine| WA[Customer WhatsApp]
+```
+
+### Supported Dispatch Modes
+
+1. **Manual Immediate Send (`dispatch_mode=immediate`):** Dispatches directly from `/document/{id}` via `callCerebroApi()` to `POST /messages/send` and logs the outcome (`sent` or `failed`) in `whatsapp_queue`.
+2. **FIFO Queue-Based Dispatch (`dispatch_mode=queue`):** Inserts messages into `whatsapp_queue` with `status='queued'`. `processWhatsAppQueue()` reads pending rows in strict arrival order (`ORDER BY id ASC`, indexed on `(status, created_at)`) and dispatches them sequentially. When **Auto-Queue** (`whatsapp_auto_queue=1`) is enabled in `/settings`, newly created invoices are automatically appended to this FIFO queue.
+3. **Scheduled Dispatch (`dispatch_mode=schedule`):** Converts the user-supplied local datetime to ISO-8601 UTC and calls Cerebro's `POST /messages/schedule` endpoint, recording `scheduled_at`, `status='scheduled'`, and `cerebro_id`.
+4. **Integration Settings (`/settings`, `action=whatsapp_settings`):** Stores `whatsapp_api_url`, `whatsapp_api_key`, `whatsapp_enabled`, `whatsapp_auto_queue`, and `whatsapp_template` in `business_profiles`. Phone numbers are normalized to `254XXXXXXXXX` by `formatWhatsAppRecipient()` and templates are compiled with `compileWhatsAppMessage()`.
+
+### Security Notes
+
+- The Cerebro `X-API-Key` is stored in `business_profiles.whatsapp_api_key` in MySQL and rendered masked in the `/settings` form.
+- All WhatsApp forms (`whatsapp_settings`, `send_whatsapp`, `process_queue`) require an authenticated session and a valid CSRF token.
+
+## 11. Configuration and deployment files
 
 - [`docker-compose.yml`](../docker-compose.yml) — local and single-host service network, port mapping, environment, startup dependency, and persistent volumes.
 - [`Dockerfile`](../Dockerfile) — multi-stage Composer install and PHP/Apache image build.
