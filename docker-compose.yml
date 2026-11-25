@@ -5,9 +5,9 @@ services:
       - "${APP_PORT:-8081}:80"
     environment:
       DB_HOST: db
-      DB_NAME: invoicer
-      DB_USER: invoicer
-      DB_PASSWORD: invoicer_secret
+      DB_NAME: ${DB_NAME:-invoicer}
+      DB_USER: ${DB_USER:-invoicer}
+      DB_PASSWORD: ${DB_PASSWORD:-invoicer_secret}
       APP_CURRENCY: ${APP_CURRENCY:-KES}
       APP_STORAGE_PATH: /var/www/private_uploads
       APP_USERNAME: ${APP_USERNAME:-admin}
@@ -22,10 +22,10 @@ services:
   db:
     image: mysql:8.4
     environment:
-      MYSQL_DATABASE: invoicer
-      MYSQL_USER: invoicer
-      MYSQL_PASSWORD: invoicer_secret
-      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE: ${DB_NAME:-invoicer}
+      MYSQL_USER: ${DB_USER:-invoicer}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-invoicer_secret}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_secret}
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:

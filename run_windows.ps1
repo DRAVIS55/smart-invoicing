@@ -52,6 +52,19 @@ try {
         Stop-WithError 'Place this script in the Ledger project root next to docker-compose.yml and Dockerfile.'
     }
     if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
+        $candidateBinPaths = @(
+            (Join-Path $env:ProgramFiles 'Docker\Docker\resources\bin'),
+            (Join-Path $env:LOCALAPPDATA 'Programs\DockerDesktop\resources\bin'),
+            (Join-Path $env:LOCALAPPDATA 'Programs\Docker\Docker\resources\bin')
+        )
+        foreach ($bp in $candidateBinPaths) {
+            if (Test-Path (Join-Path $bp 'docker.exe')) {
+                $env:Path = "$bp;$env:Path"
+                break
+            }
+        }
+    }
+    if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
         $downloadUrl = 'https://www.docker.com/products/docker-desktop/'
         Write-Warn 'Docker Desktop is required to run this containerized app on Windows.'
         Write-Host "Install Docker Desktop from $downloadUrl, start it, then run this script again."
@@ -67,6 +80,7 @@ try {
     if ($LASTEXITCODE -ne 0 -or -not $dockerInfo) {
         $desktopPaths = @(
             (Join-Path $env:ProgramFiles 'Docker\Docker\Docker Desktop.exe'),
+            (Join-Path $env:LOCALAPPDATA 'Programs\DockerDesktop\Docker Desktop.exe'),
             (Join-Path $env:LOCALAPPDATA 'Programs\Docker\Docker\Docker Desktop.exe')
         )
         $desktopExe = $desktopPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
